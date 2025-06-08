@@ -18,7 +18,7 @@ func Setup(router *gin.Engine, apiKey string, stressHandler *handlers.StressHand
 	router.Use(gin.Recovery())
 
 	registerGetHead(router, "/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "status ok"})
+		c.Status(http.StatusOK)
 	})
 
 	registerGetHead(router, "/favicon.ico", func(c *gin.Context) {
