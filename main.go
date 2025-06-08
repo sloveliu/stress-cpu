@@ -20,6 +20,12 @@ func main() {
 	gin.SetMode(ginMode)
 
 	router := gin.New()
+	// 信任這些 IP 代理來源，以確保 gin 不會直接將代理 IP 作為客戶端
+	err := router.SetTrustedProxies([]string{"127.0.0.1", "::1", "172.17.0.0/16"})
+	if err != nil {
+		log.Fatalf("Failed to set trusted proxies: %v", err)
+	}
+
 	stressHandler := handlers.NewStressHandler()
 	routes.Setup(router, cfg.APIKey, stressHandler)
 
