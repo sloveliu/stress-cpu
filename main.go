@@ -3,9 +3,12 @@ package main
 import (
 	"log"
 	"os"
+	"os/signal"
+	"runtime/debug"
 	"stress-cpu/config"
 	"stress-cpu/handlers"
 	"stress-cpu/routes"
+	"syscall"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +34,21 @@ func main() {
 
 	serverAddr := ":" + cfg.Port
 	log.Printf("server startup port: %s\n", serverAddr)
-	if err := router.Run(serverAddr); err != nil {
-		log.Fatalf("server startup failed: %v", err)
-	}
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Fatalf("fatal: http server panicked: %v\n%s", r, debug.Stack())
+			}
+		}()
+		if err := router.Run(serverAddr); err != nil {
+			log.Fatalf("server startup failed: %v", err)
+		}
+	}()
+
+	<-quit
+	log.Println("server is shutting down due to kill signal...")
 }
