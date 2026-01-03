@@ -20,7 +20,7 @@ docker run -itd --name $CONTAINER_NAME -p 8080:8080 --cpus=$cpu_limit $REGISTRY_
 
 - 可在前面加上 nginx 處理憑證問題，或將憑證實作在程式碼中，避免 API Token 遭中間人竊取。
 
-## 啟動壓測
+## 啟動
 
 `bash
 curl -X GET http://localhost:8080/stress/start -H "X-API-KEY: your-secret-api-key"
@@ -32,7 +32,7 @@ curl -X GET http://localhost:8080/stress/start -H "X-API-KEY: your-secret-api-ke
 curl -X GET http://localhost:8080/stress/status -H "X-API-KEY: your-secret-api-key"
 `
 
-## 停止壓測
+## 停止
 
 `bash
 curl -X GET http://localhost:8080/stress/stop -H "X-API-KEY: your-secret-api-key"
